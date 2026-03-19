@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base { body { background: #050510; color: #f0f0f0; } }
+@layer utilities {
+  .grid-bg { background-image: linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px); background-size: 40px 40px; }
+  .text-glow-cyan { text-shadow: 0 0 30px #00E5FF66; }
+}
