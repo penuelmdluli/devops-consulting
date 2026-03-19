@@ -2,242 +2,219 @@
 import { useState } from "react"
 
 const SKILLS = [
-  { name: "Jenkins CI/CD", level: 98 }, { name: "Kubernetes / OpenShift", level: 95 },
-  { name: ".NET MAUI (Android/iOS)", level: 92 }, { name: "Docker / Skopeo", level: 95 },
-  { name: "PostgreSQL / Liquibase", level: 90 }, { name: "Azure DevOps", level: 88 },
-  { name: "Arxan / Digital.ai Security", level: 85 }, { name: "Python / Bash Automation", level: 87 }
+  { cat: "CI/CD & Build", items: ["Jenkins Pipelines", "GitHub Actions", "Azure DevOps", ".NET MAUI Builds", "Android/iOS Signing", "Arxan/Digital.ai"] },
+  { cat: "Containers & Orchestration", items: ["Kubernetes (OKD)", "Alauda Platform", "Docker", "Skopeo", "OpenShift", "Helm Charts"] },
+  { cat: "Databases & Migrations", items: ["PostgreSQL", "Liquibase", "Schema Management", "Multi-country DBs", "UAT/SIT Pipelines"] },
+  { cat: "Monitoring & Security", items: ["Prometheus", "Grafana", "Security Hardening", "Secret Management", "Vulnerability Scanning"] }
 ]
 
-const EXPERIENCE = [
+const MARKETS = ["🇿🇦 South Africa", "🇰🇪 Kenya", "🇺🇬 Uganda", "🇧🇼 Botswana", "🇹🇿 Tanzania", "🇬🇭 Ghana", "🇲🇺 Mauritius", "🇲🇿 Mozambique", "🇿🇲 Zambia"]
+
+const CASE_STUDIES = [
   {
-    role: "Senior DevOps Engineer", company: "ABSA Bank (via Roamus)", period: "2021 — Present",
-    color: "#FFD700", icon: "🏦",
-    highlights: [
-      "Managing CI/CD pipelines for mobile banking apps across 9 African markets (KE, UG, BW, TZ, GH, MU, MZ, ZM, SC)",
-      "Jenkins + OpenShift/OKD + Alauda Container Platform orchestration",
-      "Android AAB/APK + iOS IPA builds with Arxan/Digital.ai protection",
-      "PostgreSQL migrations via Liquibase across dev/SIT/UAT environments",
-      "Docker image migration pipeline using Skopeo on Kubernetes",
-      "Managed 8 self-hosted macOS build agents"
-    ]
+    title: "Mobile Banking CI/CD — 9 African Markets",
+    client: "Major SA Bank (ABSA Group)",
+    challenge: "Single CI/CD pipeline needed to build, sign, and deploy unique .NET MAUI mobile banking apps for 9 different African countries, each with unique configurations, provisioning profiles, and Arxan security protection.",
+    solution: "Designed a parameterised Jenkins pipeline architecture that handles country-specific build variants, automated Arxan blueprint injection, Apple provisioning profile management, and Firebase App Distribution for UAT testing.",
+    results: ["Reduced build time by 60%", "Zero manual signing errors", "9 markets deployed from single pipeline", "Full Arxan/Digital.ai integration"],
+    tech: ["Jenkins", ".NET MAUI", "Android/iOS", "Arxan", "Firebase", "Xcode"]
   },
   {
-    role: "Mobile Developer (Xamarin)", company: "Boxfusion", period: "2018 — 2021",
-    color: "#00E5FF", icon: "📱",
-    highlights: [
-      "Built Xamarin.Forms mobile apps for enterprise clients",
-      "Transitioned into DevOps/infrastructure as product complexity grew",
-      "Azure DevOps pipelines, app store deployments, Firebase distribution"
-    ]
+    title: "Liquibase Database Migration Pipeline",
+    client: "African Banking Platform",
+    challenge: "Multi-country PostgreSQL schema migrations with different database servers per country (BW, KE, UG), shared vs isolated schemas, and environment-specific (dev/sit/uat) configurations causing drift and checksum failures.",
+    solution: "Built environment-aware Liquibase pipeline with country-based parameter injection, schema drift detection, and automated rollback capability. Implemented sed-based placeholder replacement with validation.",
+    results: ["Zero production schema incidents", "Automated cross-country rollouts", "Environment parity achieved", "Full audit trail"],
+    tech: ["Liquibase", "PostgreSQL", "Jenkins", "Bash", "Docker"]
+  },
+  {
+    title: "Docker Image Migration to Enterprise Registry",
+    client: "African Digital Banking Platform",
+    challenge: "Migrate 200+ Docker images from legacy Artifactory to enterprise ABSA registry using Skopeo, with authentication, network timeouts on large images, and RFC 1123 pod naming constraints.",
+    solution: "Kubernetes-based Skopeo migration pipeline with retry logic, chunked transfers, auth secret management, and progress tracking dashboard.",
+    results: ["200+ images migrated", "Zero downtime", "Automated verification", "Audit log per image"],
+    tech: ["Skopeo", "Kubernetes (OKD)", "Docker", "Jenkins", "Bash"]
   }
 ]
 
 const SERVICES = [
-  { icon: "🔄", title: "CI/CD Pipeline Audit & Optimization", price: "From $500", desc: "Full audit of your Jenkins/Azure DevOps/GitHub Actions pipelines. Identify bottlenecks, security gaps, and optimization opportunities." },
-  { icon: "📱", title: "Mobile Banking DevOps Setup", price: "From $2,000", desc: "End-to-end CI/CD for .NET MAUI or Xamarin apps. Android + iOS builds, signing, security protection, distribution." },
-  { icon: "🐳", title: "Kubernetes / OpenShift Deployment", price: "From $1,500", desc: "Container orchestration setup, namespace management, deployment configs, monitoring, and scaling strategies." },
-  { icon: "🗄️", title: "Database Migration Pipeline", price: "From $800", desc: "Liquibase setup for PostgreSQL schema management across environments. Checksum handling, rollback strategies, multi-country DB management." },
-  { icon: "🛡️", title: "Mobile App Security Integration", price: "From $1,200", desc: "Arxan/Digital.ai protection integration into your CI/CD pipeline. Blueprint configuration, iOS EnsureIT setup." },
-  { icon: "📋", title: "Monthly DevOps Retainer", price: "$2,000–$5,000/mo", desc: "Dedicated DevOps support. Pipeline maintenance, incident response, new feature deployments, on-call support." }
+  { name: "DevOps Audit", price: "$500", time: "1 week", desc: "Full audit of your CI/CD pipelines, infrastructure, security posture, and delivery speed. Detailed report + roadmap." },
+  { name: "Pipeline Setup", price: "$2,000–$5,000", time: "2–4 weeks", desc: "Custom CI/CD pipeline for your team. Jenkins, GitHub Actions, or Azure DevOps. Mobile or backend." },
+  { name: "Monthly Retainer", price: "$2,000–$4,000/mo", time: "Ongoing", desc: "Dedicated DevOps support. Pipeline maintenance, incidents, new environments, team upskilling." },
+  { name: "Mobile DevOps", price: "$3,000–$8,000", time: "4–8 weeks", desc: "Full mobile banking build pipeline: .NET MAUI/Xamarin, iOS/Android signing, security protection, multi-market." }
 ]
 
-const CASE_STUDIES = [
-  {
-    title: "9-Country Mobile Banking Pipeline", client: "Pan-African Bank (ABSA)", color: "#FFD700",
-    challenge: "Manage separate CI/CD pipelines for Android and iOS builds across 9 African country variants, each with unique app signing, Arxan security configs, and Firebase distribution.",
-    solution: "Unified Jenkins pipeline with country-variant parameterization. Automated provisioning profile management, parallel builds across 8 macOS agents, Arxan blueprint automation.",
-    result: "Reduced build time by 60%. Zero missed releases across 9 markets. 99.8% pipeline uptime over 3 years."
-  },
-  {
-    title: "PostgreSQL Multi-Country Schema Management", client: "Pan-African Bank (ABSA)", color: "#00E5FF",
-    challenge: "Liquibase migrations failing across BW/KE/UG country schemas due to checksum mismatches and schema drift between environments.",
-    solution: "Custom sed-based placeholder replacement pipeline, per-environment lockfile management, automated schema drift detection and alerting.",
-    result: "Zero failed UAT deployments over 6 months. Schema consistency across 6 database servers."
-  }
-]
-
-export default function Portfolio() {
-  const [contactForm, setContactForm] = useState({ name: "", email: "", company: "", message: "", budget: "" })
-  const [submitted, setSubmitted] = useState(false)
+export default function DevOpsConsulting() {
+  const [activeCase, setActiveCase] = useState(0)
+  const [contact, setContact] = useState({ name: "", email: "", company: "", budget: "", message: "" })
+  const [sent, setSent] = useState(false)
 
   const handleContact = async (e: React.FormEvent) => {
     e.preventDefault()
-    await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(contactForm) })
-    setSubmitted(true)
+    await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(contact) })
+    setSent(true)
   }
 
   return (
-    <div className="min-h-screen bg-[#050510] grid-bg">
+    <div className="min-h-screen bg-[#0a0a0a] text-[#f5f5f5]">
+
       {/* NAV */}
-      <nav className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto border-b border-[#1a1a1a]">
-        <div className="font-mono text-sm text-[#00E5FF]">sabelo@devops-africa:~$</div>
-        <div className="hidden md:flex gap-8 text-sm text-gray-400 font-mono">
-          <a href="#about" className="hover:text-white">about</a>
-          <a href="#services" className="hover:text-white">services</a>
-          <a href="#work" className="hover:text-white">work</a>
-          <a href="#contact" className="hover:text-white">contact</a>
+      <nav className="flex items-center justify-between px-8 py-6 max-w-6xl mx-auto border-b border-[#222]">
+        <div>
+          <div className="font-black text-xl tracking-tight">Sabelo Mdluli</div>
+          <div className="text-xs text-[#888] tracking-widest mt-0.5">DEVOPS ENGINEER · AFRICA</div>
         </div>
-        <a href="#contact" className="bg-[#00E5FF] text-black text-sm font-black px-4 py-2 rounded-lg hover:bg-cyan-300">
+        <div className="hidden md:flex gap-8 text-sm text-[#888]">
+          {["Services", "Case Studies", "Skills", "Contact"].map(l => (
+            <a key={l} href={`#${l.toLowerCase().replace(" ", "-")}`} className="hover:text-white transition-colors">{l}</a>
+          ))}
+        </div>
+        <a href="#contact" className="border border-[#FFD700] text-[#FFD700] font-bold px-5 py-2.5 rounded text-sm hover:bg-[#FFD700] hover:text-black transition-all">
           Hire Me →
         </a>
       </nav>
 
       {/* HERO */}
-      <section id="about" className="px-6 py-24 max-w-6xl mx-auto">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-[#00E5FF11] border border-[#00E5FF33] text-[#00E5FF] text-xs px-4 py-2 rounded-full mb-6 font-mono">
-            ▶ AVAILABLE FOR CONTRACTS · REMOTE + ON-SITE · AFRICA + GLOBAL
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black leading-none mb-6 tracking-tight">
-            Africa's<br/>
-            <span className="text-[#00E5FF] text-glow-cyan">DevOps</span><br/>
-            Specialist
-          </h1>
-          <p className="text-xl text-gray-400 leading-relaxed mb-8 max-w-2xl">
-            Senior DevOps Engineer with <strong className="text-white">6+ years</strong> managing mobile banking infrastructure across <strong className="text-[#00E5FF]">9 African markets</strong>. Jenkins, Kubernetes, OpenShift, .NET MAUI, PostgreSQL/Liquibase.
-          </p>
-          <div className="flex flex-wrap gap-3 mb-12">
-            {["Jenkins","Kubernetes","OpenShift","Docker","PostgreSQL","Liquibase",".NET MAUI","Azure DevOps","Arxan"].map(tech => (
-              <span key={tech} className="bg-[#00E5FF0d] border border-[#00E5FF33] text-[#00E5FF] text-xs px-3 py-1.5 rounded-full font-mono">{tech}</span>
-            ))}
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[["6+","Years DevOps"],["9","African Markets"],["8","Build Agents Managed"],["99.8%","Pipeline Uptime"]].map(([v,l],i) => (
-              <div key={i} className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-4">
-                <div className="text-2xl font-black text-[#00E5FF]">{v}</div>
-                <div className="text-xs text-gray-500 mt-1">{l}</div>
-              </div>
-            ))}
-          </div>
+      <section className="px-8 pt-24 pb-20 max-w-5xl mx-auto">
+        <div className="text-xs text-[#FFD700] tracking-widest mb-4">AVAILABLE FOR CONTRACTS · REMOTE + AFRICA</div>
+        <h1 className="text-5xl md:text-6xl font-black leading-tight mb-6 tracking-tight">
+          Africa's Mobile<br />Banking<br />
+          <span className="text-[#FFD700]">DevOps Specialist</span>
+        </h1>
+        <p className="text-lg text-[#888] max-w-2xl mb-8 leading-relaxed">
+          6+ years deploying mobile banking infrastructure across 9 African markets. I build the CI/CD pipelines, Kubernetes platforms, and database systems that power financial services for millions of Africans.
+        </p>
+        <div className="flex flex-wrap gap-4 mb-16">
+          <a href="#contact" className="bg-[#FFD700] text-black font-black px-6 py-3 rounded hover:bg-yellow-300 transition-colors">
+            Book a Call →
+          </a>
+          <a href="#case-studies" className="border border-[#333] text-[#888] px-6 py-3 rounded hover:border-[#666] transition-colors">
+            View Case Studies
+          </a>
         </div>
-      </section>
-
-      {/* SKILLS */}
-      <section className="px-6 py-16 max-w-6xl mx-auto">
-        <div className="text-xs text-[#00E5FF] tracking-widest mb-8">SKILLS & EXPERTISE</div>
-        <div className="grid md:grid-cols-2 gap-4">
-          {SKILLS.map((skill, i) => (
-            <div key={i} className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-5">
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-bold">{skill.name}</span>
-                <span className="text-xs text-[#00E5FF] font-mono">{skill.level}%</span>
-              </div>
-              <div className="bg-[#1a1a1a] rounded-full h-1.5">
-                <div className="bg-[#00E5FF] h-1.5 rounded-full transition-all" style={{ width: `${skill.level}%` }} />
-              </div>
-            </div>
+        <div className="flex flex-wrap gap-3">
+          {MARKETS.map((m, i) => (
+            <span key={i} className="text-sm border border-[#222] px-3 py-1.5 rounded text-[#888]">{m}</span>
           ))}
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section id="services" className="px-6 py-16 max-w-6xl mx-auto">
-        <div className="text-xs text-[#00E5FF] tracking-widest mb-3">SERVICES</div>
-        <h2 className="text-4xl font-black mb-12">What I Can Do For You</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {SERVICES.map((s, i) => (
-            <div key={i} className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-6 hover:border-[#00E5FF33] transition-colors">
-              <div className="text-3xl mb-3">{s.icon}</div>
-              <div className="font-bold mb-2">{s.title}</div>
-              <div className="text-[#00E5FF] text-sm font-bold mb-3">{s.price}</div>
-              <div className="text-sm text-gray-400 leading-relaxed">{s.desc}</div>
+      {/* SKILLS */}
+      <section id="skills" className="px-8 py-20 max-w-5xl mx-auto">
+        <div className="text-xs text-[#FFD700] tracking-widest mb-4">TECHNICAL SKILLS</div>
+        <h2 className="text-3xl font-black mb-10">What I Work With</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {SKILLS.map((group, i) => (
+            <div key={i} className="border border-[#1a1a1a] rounded-xl p-6">
+              <div className="text-xs text-[#FFD700] tracking-widest mb-4">{group.cat.toUpperCase()}</div>
+              <div className="flex flex-wrap gap-2">
+                {group.items.map((skill, j) => (
+                  <span key={j} className="bg-[#111] border border-[#222] text-sm px-3 py-1.5 rounded text-[#ccc]">{skill}</span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </section>
 
       {/* CASE STUDIES */}
-      <section id="work" className="px-6 py-16 max-w-6xl mx-auto">
-        <div className="text-xs text-[#00E5FF] tracking-widest mb-3">CASE STUDIES</div>
-        <h2 className="text-4xl font-black mb-12">Real Work, Real Results</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          {CASE_STUDIES.map((cs, i) => (
-            <div key={i} className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-8">
-              <div className="text-xs mb-4" style={{ color: cs.color }}>{cs.client.toUpperCase()}</div>
-              <h3 className="text-xl font-black mb-6">{cs.title}</h3>
-              {[
-                { label: "CHALLENGE", text: cs.challenge, color: "#FF444422" },
-                { label: "SOLUTION", text: cs.solution, color: "#00E5FF11" },
-                { label: "RESULT", text: cs.result, color: "#00FF8822" }
-              ].map(block => (
-                <div key={block.label} className="mb-4 p-4 rounded-lg" style={{ background: block.color }}>
-                  <div className="text-xs text-gray-500 tracking-widest mb-2">{block.label}</div>
-                  <p className="text-sm text-gray-300 leading-relaxed">{block.text}</p>
-                </div>
-              ))}
-            </div>
+      <section id="case-studies" className="px-8 py-20 max-w-5xl mx-auto">
+        <div className="text-xs text-[#FFD700] tracking-widest mb-4">CASE STUDIES</div>
+        <h2 className="text-3xl font-black mb-10">Real Projects. Real Results.</h2>
+        <div className="flex gap-3 mb-8 overflow-x-auto pb-2">
+          {CASE_STUDIES.map((c, i) => (
+            <button key={i} onClick={() => setActiveCase(i)}
+              className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm transition-all ${activeCase === i ? "bg-[#FFD700] text-black font-bold" : "border border-[#333] text-[#888] hover:border-[#555]"}`}>
+              {c.title.split("—")[0].trim()}
+            </button>
           ))}
         </div>
+        {(() => {
+          const c = CASE_STUDIES[activeCase]
+          return (
+            <div className="border border-[#1a1a1a] rounded-2xl p-8">
+              <div className="text-xs text-[#888] mb-2">{c.client}</div>
+              <h3 className="text-xl font-black mb-6">{c.title}</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div><div className="text-xs text-[#FFD700] tracking-widest mb-3">CHALLENGE</div><p className="text-sm text-[#999] leading-relaxed">{c.challenge}</p></div>
+                <div><div className="text-xs text-[#FFD700] tracking-widest mb-3">SOLUTION</div><p className="text-sm text-[#999] leading-relaxed">{c.solution}</p></div>
+                <div>
+                  <div className="text-xs text-[#FFD700] tracking-widest mb-3">RESULTS</div>
+                  <ul className="space-y-2">{c.results.map((r,i) => <li key={i} className="text-sm text-[#ccc] flex items-start gap-2"><span className="text-[#FFD700]">✓</span>{r}</li>)}</ul>
+                  <div className="mt-4 flex flex-wrap gap-2">{c.tech.map((t,i) => <span key={i} className="text-xs bg-[#111] border border-[#222] px-2 py-1 rounded text-[#888]">{t}</span>)}</div>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
       </section>
 
-      {/* EXPERIENCE */}
-      <section className="px-6 py-16 max-w-6xl mx-auto">
-        <div className="text-xs text-[#00E5FF] tracking-widest mb-3">EXPERIENCE</div>
-        <h2 className="text-4xl font-black mb-12">Career History</h2>
-        <div className="space-y-6">
-          {EXPERIENCE.map((exp, i) => (
-            <div key={i} className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-8">
-              <div className="flex items-start justify-between mb-4 flex-wrap gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">{exp.icon}</span>
-                    <h3 className="text-xl font-black">{exp.role}</h3>
-                  </div>
-                  <div style={{ color: exp.color }} className="text-sm font-bold">{exp.company}</div>
+      {/* SERVICES */}
+      <section id="services" className="px-8 py-20 max-w-5xl mx-auto">
+        <div className="text-xs text-[#FFD700] tracking-widest mb-4">SERVICES</div>
+        <h2 className="text-3xl font-black mb-10">How I Can Help</h2>
+        <div className="grid md:grid-cols-2 gap-5">
+          {SERVICES.map((s, i) => (
+            <div key={i} className="border border-[#1a1a1a] rounded-xl p-6 hover:border-[#FFD700]/30 transition-all">
+              <div className="flex items-start justify-between mb-3">
+                <h3 className="font-black text-lg">{s.name}</h3>
+                <div className="text-right">
+                  <div className="text-[#FFD700] font-bold text-sm">{s.price}</div>
+                  <div className="text-xs text-[#666]">{s.time}</div>
                 </div>
-                <span className="bg-[#1a1a1a] text-gray-400 text-xs px-3 py-1.5 rounded-full font-mono">{exp.period}</span>
               </div>
-              <ul className="space-y-2">
-                {exp.highlights.map((h, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm text-gray-300">
-                    <span style={{ color: exp.color }}>→</span> {h}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-sm text-[#888] leading-relaxed">{s.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="px-6 py-16 max-w-3xl mx-auto">
-        <div className="text-xs text-[#00E5FF] tracking-widest mb-3">CONTACT</div>
-        <h2 className="text-4xl font-black mb-4">Let's Work Together</h2>
-        <p className="text-gray-400 mb-10">Available for contracts across Africa and globally. Remote-first.</p>
-        {submitted ? (
-          <div className="bg-[#001a08] border border-[#00FF8833] rounded-2xl p-12 text-center">
+      <section id="contact" className="px-8 py-20 max-w-2xl mx-auto">
+        <div className="text-xs text-[#FFD700] tracking-widest mb-4">CONTACT</div>
+        <h2 className="text-3xl font-black mb-8">Let's Work Together</h2>
+        {sent ? (
+          <div className="border border-[#FFD700]/40 rounded-2xl p-10 text-center">
             <div className="text-4xl mb-4">✅</div>
-            <h3 className="text-xl font-black">Message Received!</h3>
-            <p className="text-gray-400 mt-2">I'll respond within 24 hours.</p>
+            <h3 className="text-xl font-black text-[#FFD700]">Message Received!</h3>
+            <p className="text-[#888] mt-2">I'll respond within 24 hours via email or WhatsApp.</p>
           </div>
         ) : (
-          <form onSubmit={handleContact} className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-2xl p-8 space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              {[{ k:"name",l:"YOUR NAME",p:"Your name" },{ k:"email",l:"EMAIL",p:"you@company.com" },{ k:"company",l:"COMPANY",p:"Company name" },{ k:"budget",l:"BUDGET RANGE",p:"e.g. $2,000–$5,000/mo" }].map(f => (
-                <div key={f.k}>
-                  <label className="text-xs text-gray-500 tracking-widest block mb-2">{f.l}</label>
-                  <input value={(contactForm as any)[f.k]} onChange={e => setContactForm(p => ({...p,[f.k]:e.target.value}))}
-                    className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00E5FF44]"
-                    placeholder={f.p} />
-                </div>
-              ))}
-            </div>
+          <form onSubmit={handleContact} className="space-y-4">
+            {[
+              { name: "name", label: "YOUR NAME", placeholder: "John Smith", type: "text" },
+              { name: "email", label: "EMAIL", placeholder: "john@company.com", type: "email" },
+              { name: "company", label: "COMPANY / PROJECT", placeholder: "Fintech Startup Kenya", type: "text" },
+              { name: "budget", label: "BUDGET RANGE", placeholder: "e.g. $2,000–$5,000/month", type: "text" },
+            ].map(field => (
+              <div key={field.name}>
+                <label className="text-xs text-[#666] tracking-widest block mb-2">{field.label}</label>
+                <input type={field.type} placeholder={field.placeholder} required
+                  value={contact[field.name as keyof typeof contact]}
+                  onChange={e => setContact(p => ({ ...p, [field.name]: e.target.value }))}
+                  className="w-full bg-[#111] border border-[#222] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFD700]/40 transition-colors placeholder-[#444]" />
+              </div>
+            ))}
             <div>
-              <label className="text-xs text-gray-500 tracking-widest block mb-2">WHAT DO YOU NEED?</label>
-              <textarea value={contactForm.message} onChange={e => setContactForm(p => ({...p,message:e.target.value}))}
-                className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00E5FF44] h-32 resize-none"
-                placeholder="Describe your DevOps challenge or project..." />
+              <label className="text-xs text-[#666] tracking-widest block mb-2">WHAT DO YOU NEED?</label>
+              <textarea placeholder="Describe your project or challenge..." rows={4} required
+                value={contact.message}
+                onChange={e => setContact(p => ({ ...p, message: e.target.value }))}
+                className="w-full bg-[#111] border border-[#222] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFD700]/40 transition-colors placeholder-[#444] resize-none" />
             </div>
-            <button type="submit" className="w-full bg-[#00E5FF] text-black font-black py-4 rounded-xl hover:bg-cyan-300 transition-colors">
+            <button type="submit" className="w-full bg-[#FFD700] text-black font-black py-4 rounded-xl text-lg hover:bg-yellow-300 transition-colors">
               Send Message →
             </button>
           </form>
         )}
       </section>
 
-      <footer className="border-t border-[#1a1a1a] px-6 py-8 text-center text-sm text-gray-600">
-        <p className="font-mono text-[#00E5FF] mb-2">sabelo@devops-africa.co.za</p>
-        <p>© 2026 Sabelo Mdluli · DevOps · Africa</p>
+      <footer className="border-t border-[#111] px-8 py-8 max-w-5xl mx-auto flex items-center justify-between text-sm text-[#555]">
+        <div>© 2026 Sabelo Mdluli · Pretoria, South Africa</div>
+        <div className="flex gap-6">
+          <a href="https://linkedin.com/in/sabelo-mdluli" className="hover:text-[#FFD700] transition-colors">LinkedIn</a>
+          <a href="https://github.com/mdlulipenuel" className="hover:text-[#FFD700] transition-colors">GitHub</a>
+        </div>
       </footer>
     </div>
   )

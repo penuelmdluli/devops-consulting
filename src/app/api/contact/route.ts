@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json()
-    console.log("New inquiry:", body)
-    return NextResponse.json({ success: true })
-  } catch { return NextResponse.json({ error: "Failed" }, { status: 500 }) }
+import { NextResponse } from "next/server"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!)
+
+export async function POST(req: Request) {
+  const body = await req.json()
+  await supabase.from("consulting_leads").insert(body)
+  return NextResponse.json({ success: true })
 }
